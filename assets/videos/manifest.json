@@ -1,0 +1,114 @@
+{
+  "franka_place": {
+    "id": "franka_place",
+    "K": 6,
+    "steps": 23,
+    "size_kb": 120.1,
+    "metric": "6/6 strict \u00b7 23 steps"
+  },
+  "franka_pour": {
+    "id": "franka_pour",
+    "K": 5,
+    "steps": 23,
+    "size_kb": 128.3,
+    "metric": "5/5 strict \u00b7 23 steps"
+  },
+  "franka_transport": {
+    "id": "franka_transport",
+    "K": 4,
+    "steps": 17,
+    "size_kb": 103.0,
+    "metric": "4/4 strict \u00b7 17 steps"
+  },
+  "franka_axis_align": {
+    "id": "franka_axis_align",
+    "K": 4,
+    "steps": 25,
+    "size_kb": 162.8,
+    "metric": "4/4 strict \u00b7 25 steps"
+  },
+  "piper_place": {
+    "id": "piper_place",
+    "K": 6,
+    "steps": 16,
+    "size_kb": 109.7,
+    "metric": "6/6 strict \u00b7 16 steps"
+  },
+  "piper_pour": {
+    "id": "piper_pour",
+    "K": 5,
+    "steps": 25,
+    "size_kb": 116.5,
+    "metric": "5/5 strict \u00b7 25 steps"
+  },
+  "piper_transport": {
+    "id": "piper_transport",
+    "K": 4,
+    "steps": 13,
+    "size_kb": 98.9,
+    "metric": "4/4 strict \u00b7 13 steps"
+  },
+  "piper_axis_align": {
+    "id": "piper_axis_align",
+    "K": 4,
+    "steps": 17,
+    "size_kb": 95.1,
+    "metric": "4/4 strict \u00b7 17 steps"
+  },
+  "franka_k12_mixed": {
+    "id": "franka_k12_mixed",
+    "K": 12,
+    "steps": 175,
+    "size_kb": 122.2,
+    "metric": "12/12 OOD \u00b7 175 steps"
+  },
+  "piper_k12_mixed": {
+    "id": "piper_k12_mixed",
+    "K": 12,
+    "steps": 82,
+    "size_kb": 144.6,
+    "metric": "12/12 OOD \u00b7 82 steps"
+  },
+  "franka_k10_fullpose": {
+    "id": "franka_k10_fullpose",
+    "K": 10,
+    "steps": 235,
+    "size_kb": 90.1,
+    "metric": "10/10 OOD \u00b7 235 steps"
+  },
+  "piper_k10_fullpose": {
+    "id": "piper_k10_fullpose",
+    "K": 10,
+    "steps": 78,
+    "size_kb": 127.4,
+    "metric": "10/10 OOD \u00b7 78 steps"
+  },
+  "franka_perturb": {
+    "id": "franka_perturb",
+    "K": 1,
+    "steps": 89,
+    "size_kb": 66.8,
+    "metric": "2\u00d7 0.14 rad impulse \u00b7 89 steps"
+  },
+  "piper_perturb": {
+    "id": "piper_perturb",
+    "K": 1,
+    "steps": 83,
+    "size_kb": 54.7,
+    "metric": "2\u00d7 0.14 rad impulse \u00b7 83 steps"
+  },
+  "franka_k8_hetero": {
+    "id": "franka_k8_hetero",
+    "K": 8,
+    "steps": 64,
+    "size_kb": 127.0,
+    "metric": "8/8 4-modal \u00b7 64 steps"
+  },
+  "piper_k8_hetero": {
+    "id": "piper_k8_hetero",
+    "K": 8,
+    "steps": 50,
+    "size_kb": 112.4,
+    "metric": "8/8 4-modal \u00b7 50 steps"
+  }
+}

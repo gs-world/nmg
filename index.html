@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Neural Motion Generator — Learning Ordered Constraint Satisfaction without Demonstrations</title>
+  <meta name="description" content="Neural Motion Generator (NMG) trains closed-loop, multi-constraint motion policies from scratch using only differentiable forward kinematics and analytic policy gradients, with no demonstrations or task data." />
+
+  <!-- Editorial serif + clean technical sans & mono with graceful system fallbacks -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;0,6..72,700;1,6..72,400&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="./assets/css/style.css?v=2" />
+</head>
+<body>
+  <!-- Sticky Minimal Navigation -->
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="#top">
+        <span class="brand-mark">NMG</span>
+        <span class="brand-venue" id="brand-subtitle">Neural Motion Generator</span>
+      </a>
+      <nav class="nav-links" aria-label="Section navigation">
+        <a href="#rollouts">Rollouts</a>
+        <a href="#abstract">Abstract</a>
+        <a href="#method">Method</a>
+        <a href="#results">Results</a>
+        <a href="#bibtex">BibTeX</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <!-- Hero Title & Actions -->
+    <section class="hero-header">
+      <div class="container">
+        <h1 class="paper-title" id="paper-title">Neural Motion Generator</h1>
+        <p class="paper-subtitle" id="paper-subtitle">
+          Learning Ordered Constraint Satisfaction without Demonstrations
+        </p>
+        <div class="authors-block" id="authors-block"></div>
+        <div class="action-bar" id="action-bar"></div>
+      </div>
+    </section>
+
+    <!-- HERO CENTERPIECE: Full-Width 4x4 Live Closed-Loop Rollout Matrix -->
+    <section class="wall-section" id="rollouts">
+      <div class="container-wide">
+        <div class="wall-toolbar">
+          <div class="filter-pills" role="tablist" aria-label="Filter rollout videos">
+            <button class="pill active" data-filter="all">All 16 (4×4)</button>
+            <button class="pill" data-filter="franka-atomic">Franka Atomic (4)</button>
+            <button class="pill" data-filter="piper-atomic">PiPER Atomic (4)</button>
+            <button class="pill" data-filter="extrapolation">K=10–12 Extrapolation (4)</button>
+            <button class="pill" data-filter="closed-loop">Closed-Loop &amp; 4-Modality (4)</button>
+          </div>
+          <div class="playback-controls">
+            <button class="ctrl-btn" id="btn-toggle-play" type="button">❚❚ Pause All</button>
+            <button class="ctrl-btn" data-speed="0.5" type="button">0.5×</button>
+            <button class="ctrl-btn active" data-speed="1" type="button">1×</button>
+            <button class="ctrl-btn" data-speed="1.5" type="button">1.5×</button>
+          </div>
+        </div>
+
+        <div class="video-wall" id="video-wall"></div>
+
+        <div class="wall-legend">
+          <span class="legend-item"><span class="legend-grad"></span>TCP trajectory</span>
+          <span class="legend-item">
+            <span class="legend-dot" style="background:#35638c"></span>Active target
+          </span>
+          <span class="legend-item">
+            <span class="legend-dot" style="background:#376854"></span>Reached target
+          </span>
+          <span class="legend-item"><span class="legend-cube"></span>Static task frame</span>
+          <span class="legend-item">
+            <span class="legend-dot" style="background:#b84444"></span>Injected joint perturbation
+          </span>
+        </div>
+        <p class="legend-note">
+          Unedited closed-loop rollouts on Franka FR3 and PiPER V100 (trained from scratch, zero demonstrations). Click any video to zoom.
+        </p>
+      </div>
+    </section>
+
+    <!-- Headline Metrics + Abstract -->
+    <section class="section section-subtle" id="abstract">
+      <div class="container">
+        <div class="metrics-strip">
+          <div class="metric-card">
+            <div class="metric-value">
+              <span class="accent-blue">86.7%</span> <span class="sub-vs">vs &lt;0.6%</span>
+            </div>
+            <div class="metric-label">
+              APG vs. PPO strict success from scratch (Franka, 500M, <em>K</em>=1–8)
+            </div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value">
+              <span class="accent-blue">&gt;98%</span>
+            </div>
+            <div class="metric-label">
+              Zero-shot Free-space geometry success on <em>K</em>=1–8 (both robots)
+            </div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value">
+              <span class="accent-sage">+4.4 pp</span>
+            </div>
+            <div class="metric-label">
+              PiPER Atomic reaching over cuRobo (90.9% vs. 86.5%)
+            </div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value">
+              <span class="accent-ochre">3.3 kHz</span> <span class="sub-vs">8.4&times; faster</span>
+            </div>
+            <div class="metric-label">
+              Compiled CUDA-Graph step; 8.4&times; faster than cuRobo (<em>B</em>=1), 4.8&times; throughput (<em>B</em>=64)
+            </div>
+          </div>
+        </div>
+
+        <div class="container-text" style="padding:0;">
+          <div class="section-header" style="margin-bottom:1.1rem;">
+            <h2 class="section-title">Abstract</h2>
+          </div>
+          <div class="abstract-text">
+            <p>
+              Learned motion planners typically imitate offline experts, inheriting solver biases and data bottlenecks, whereas model-free RL struggles to reach tight sequential tolerances from scratch. We present <strong>Neural Motion Generator (NMG)</strong>, which trains a closed-loop, multi-constraint motion policy from scratch using only differentiable forward kinematics, with no demonstrations or task data.
+            </p>
+            <p>
+              Random bounded joint chains projected through forward kinematics generate guaranteed-feasible sequences of joint, position, orientation, and full-pose goals, while full-horizon analytic policy gradients (APG) optimize one policy end-to-end across complete rollouts. On Franka FR3 under a 500M-interaction budget, APG reaches <strong>86.7%</strong> strict success across <em>K</em>=1–8 targets where PPO stalls below <strong>0.6%</strong>. Evaluated zero-shot across Franka FR3 and 6-DoF PiPER, NMG exceeds <strong>98%</strong> success on <em>K</em>=1–8 free-space sequences, matches cuRobo on three of five Franka manipulation tasks while outperforming cuRobo overall on PiPER (<strong>90.9%</strong> vs. 86.5%), and recovers from joint disturbances in closed loop. Compiled into a CUDA Graph, NMG runs at <strong>3.3 kHz</strong> per control step, beating cuRobo by <strong>8.4&times;</strong> in single-query latency (4.9&times; retimed) and <strong>4.8&times;</strong> in batched throughput at <em>B</em>=64 (3.2&times; retimed).
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Method Overview -->
+    <section class="section" id="method">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">Method Overview</h2>
+          <p class="section-desc">
+            One four-token Transformer per robot trained end-to-end through differentiable forward kinematics.
+          </p>
+        </div>
+
+        <div class="figure-frame" data-zoom-src="./assets/images/framework.svg?v=3" data-zoom-title="NMG Training &amp; Rollout Overview" data-zoom-caption="Bounded joint-chain goal sampling, closed-loop kinematic rollout, and full-horizon APG differentiation.">
+          <img src="./assets/images/framework.svg?v=3" alt="Neural Motion Generator Training Overview Diagram" />
+          <p class="figure-caption">
+            <strong>Figure 1. Training &amp; rollout overview.</strong> Bounded joint chains projected through FK synthesize feasible multi-constraint goals without action labels; full-horizon APG differentiates dense tracking costs directly across closed-loop rollouts.
+          </p>
+        </div>
+
+        <div class="figure-frame" data-zoom-src="./assets/images/policy-arch.svg?v=3" data-zoom-title="Unified Four-Token Feedback Policy Architecture" data-zoom-caption="(a) Four-token Transformer policy with normalize-then-mask input and bounded tanh output; (b) optional gated future-context ablation branch.">
+          <img src="./assets/images/policy-arch.svg?v=3" alt="Unified Four-Token Feedback Policy Architecture Diagram" />
+          <p class="figure-caption">
+            <strong>Figure 2. Unified four-token policy architecture.</strong> (a) Active constraint features are normalized then masked and fed alongside robot state into a four-token Transformer encoder at <em>O</em>(1) cost independent of <em>K</em>. (b) An optional gated cross-attention branch injects future-goal residuals for the lookahead ablation.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Interactive Quantitative Results -->
+    <section class="section section-subtle" id="results">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">NMG-Bench Results</h2>
+          <p class="section-desc">
+            Independent zero-shot evaluation under strict tolerances (&le;0.01 m, &le;0.1 rad, &le;0.01 rad).
+          </p>
+        </div>
+
+        <div class="tabs-bar" role="tablist">
+          <button class="tab-btn active" data-tab="freespace">Free-Space (K=1–12)</button>
+          <button class="tab-btn" data-tab="atomic">Atomic Reaching</button>
+          <button class="tab-btn" data-tab="runtime">Runtime &amp; Scaling</button>
+          <button class="tab-btn" data-tab="learning">APG vs. PPO</button>
+          <button class="tab-btn" data-tab="behavior">Closed-Loop &amp; Context</button>
+        </div>
+
+        <!-- TAB 1: Free-Space -->
+        <div class="tab-panel active" id="tab-freespace">
+          <div class="result-grid">
+            <div class="card-box">
+              <h3>Free-Space Ordered Constraints (8,424 Requests / Robot)</h3>
+              <p class="card-sub">
+                In-distribution horizons (<em>K</em>=1–8) vs. unseen count generalization (<em>K</em>=9–12). Geometry and velocity/acceleration-feasible Timed success (%) reported separately.
+              </p>
+              <div class="table-wrap">
+                <table class="academic-table">
+                  <thead>
+                    <tr>
+                      <th rowspan="2">Robot</th>
+                      <th rowspan="2" class="left">Method</th>
+                      <th colspan="2">K = 1–8 (In-Dist.)</th>
+                      <th colspan="2">K = 9–12 (Unseen)</th>
+                    </tr>
+                    <tr>
+                      <th>Geom.</th>
+                      <th>Timed</th>
+                      <th>Geom.</th>
+                      <th>Timed</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Franka</td>
+                      <td class="left">cuRobo</td>
+                      <td class="best">98.9</td>
+                      <td class="best">98.9</td>
+                      <td class="best">98.6</td>
+                      <td class="best">98.6</td>
+                    </tr>
+                    <tr>
+                      <td></td>
+                      <td class="left">IK+TOPPRA</td>
+                      <td>78.9</td>
+                      <td>78.9</td>
+                      <td>75.0</td>
+                      <td>75.0</td>
+                    </tr>
+                    <tr class="row-nmg">
+                      <td></td>
+                      <td class="left"><strong>NMG raw</strong></td>
+                      <td>98.2</td>
+                      <td>N/A</td>
+                      <td>94.9</td>
+                      <td>N/A</td>
+                    </tr>
+                    <tr class="row-nmg">
+                      <td></td>
+                      <td class="left"><strong>NMG retimed</strong></td>
+                      <td>98.2</td>
+                      <td>98.2</td>
+                      <td>95.0</td>
+                      <td>95.0</td>
+                    </tr>
+                    <tr class="group-sep">
+                      <td>PiPER</td>
+                      <td class="left">cuRobo</td>
+                      <td class="best">99.7</td>
+                      <td class="best">99.7</td>
+                      <td class="best">99.7</td>
+                      <td class="best">99.7</td>
+                    </tr>
+                    <tr>
+                      <td></td>
+                      <td class="left">IK+TOPPRA</td>
+                      <td>78.9</td>
+                      <td>78.9</td>
+                      <td>76.7</td>
+                      <td>76.7</td>
+                    </tr>
+                    <tr class="row-nmg">
+                      <td></td>
+                      <td class="left"><strong>NMG raw</strong></td>
+                      <td>98.1</td>
+                      <td>N/A</td>
+                      <td>97.3</td>
+                      <td>N/A</td>
+                    </tr>
+                    <tr class="row-nmg">
+                      <td></td>
+                      <td class="left"><strong>NMG retimed</strong></td>
+                      <td>98.1</td>
+                      <td>98.1</td>
+                      <td>97.3</td>
+                      <td>97.3</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <ul class="takeaway-list">
+                <li>Exceeds <strong>98%</strong> on <em>K</em>=1–8 (+20 pp over IK+TOPPRA) with zero Orientation failures and zero joint-limit violations across all 8,424 requests per robot.</li>
+              </ul>
+            </div>
+
+            <div class="card-box">
+              <h3>Per-Modality Breakdown</h3>
+              <p class="card-sub">Strict geometry success across Joint, Position, Orientation, FullPose, and Mixed sequences.</p>
+              <img class="result-img" src="./assets/images/constraint-comparison.png" alt="Per-constraint family comparison" data-zoom-src="./assets/images/constraint-comparison.png" data-zoom-title="Per-Constraint Family Breakdown" data-zoom-caption="Free-space strict geometry success across Joint, Position, Orientation, FullPose, and Mixed families on Franka FR3 and PiPER V100." />
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 2: Atomic Reaching -->
+        <div class="tab-panel" id="tab-atomic">
+          <div class="result-grid">
+            <div class="card-box">
+              <h3>Zero-Shot Task-Derived Reaching (1,920 Sequences / Robot)</h3>
+              <p class="card-sub">
+                Five manipulation-derived ordered TCP reaching tasks across three pose-perturbation domains (without gripper actuation or object dynamics).
+              </p>
+              <div class="table-wrap">
+                <table class="academic-table">
+                  <thead>
+                    <tr>
+                      <th rowspan="2">Task</th>
+                      <th colspan="3">Franka FR3 (7-DoF)</th>
+                      <th colspan="3">PiPER V100 (6-DoF)</th>
+                    </tr>
+                    <tr>
+                      <th>cuRobo</th>
+                      <th>IK+TOP.</th>
+                      <th>NMG</th>
+                      <th>cuRobo</th>
+                      <th>IK+TOP.</th>
+                      <th>NMG</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>PickUp</td>
+                      <td class="best">100.0</td>
+                      <td class="best">100.0</td>
+                      <td>99.5</td>
+                      <td class="best">100.0</td>
+                      <td>9.9</td>
+                      <td class="best">100.0</td>
+                    </tr>
+                    <tr>
+                      <td>Transport</td>
+                      <td>99.5</td>
+                      <td>99.2</td>
+                      <td class="best">99.7</td>
+                      <td>82.3</td>
+                      <td>66.7</td>
+                      <td class="best">94.8 <span class="gain-badge">+12.5</span></td>
+                    </tr>
+                    <tr>
+                      <td>Place</td>
+                      <td class="best">100.0</td>
+                      <td>99.0</td>
+                      <td>99.0</td>
+                      <td>94.8</td>
+                      <td>82.6</td>
+                      <td class="best">99.2 <span class="gain-badge">+4.4</span></td>
+                    </tr>
+                    <tr>
+                      <td>Pour</td>
+                      <td class="best">99.5</td>
+                      <td>90.6</td>
+                      <td>54.4</td>
+                      <td class="best">100.0</td>
+                      <td>78.1</td>
+                      <td>89.3</td>
+                    </tr>
+                    <tr>
+                      <td>AxisAlign</td>
+                      <td class="best">100.0</td>
+                      <td>98.7</td>
+                      <td>89.1</td>
+                      <td>55.2</td>
+                      <td>8.3</td>
+                      <td class="best">71.1 <span class="gain-badge">+15.9</span></td>
+                    </tr>
+                    <tr class="row-mean">
+                      <td>Mean</td>
+                      <td class="best">99.8</td>
+                      <td>97.5</td>
+                      <td>88.3</td>
+                      <td>86.5</td>
+                      <td>49.1</td>
+                      <td class="best">90.9 <span class="gain-badge">+4.4</span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <ul class="takeaway-list">
+                <li><strong>+4.4 pp over cuRobo</strong> on 6-DoF PiPER (Transport +12.5 pp, AxisAlign +15.9 pp); matches cuRobo on Franka PickUp, Transport, and Place (99.0–99.7%).</li>
+              </ul>
+            </div>
+
+            <div class="card-box">
+              <h3>Rollout Summary &amp; Failure Modes</h3>
+              <p class="card-sub">Composite of unseen Atomic trajectories (click to zoom).</p>
+              <img class="result-img" src="./assets/images/teaser.png" alt="NMG 2x2 Teaser Figure" data-zoom-src="./assets/images/teaser.png" data-zoom-title="NMG 2×2 Atomic Reaching Composite" data-zoom-caption="Multi-exposure renders of NMG policies executing unseen Atomic reaching sequences on Franka FR3 (Place, Pour) and PiPER V100 (Transport, AxisAlign)." />
+              <ul class="takeaway-list">
+                <li><strong>Complementary bottlenecks:</strong> PiPER cuRobo fails at grasp (waypoint 2) whereas NMG completes grasp/lift cleanly; Franka Pour misses localize to one narrow translation pocket.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 3: Runtime & Scaling -->
+        <div class="tab-panel" id="tab-runtime">
+          <div class="result-grid">
+            <div class="card-box">
+              <h3>Serial Latency &amp; Batched Throughput (Franka, FullPose K=8)</h3>
+              <p class="card-sub">Single NVIDIA RTX PRO 5000 GPU; compiled <code>torch.compile</code> CUDA Graph matching cuRobo's CUDA Graphs.</p>
+              <div class="table-wrap">
+                <table class="academic-table">
+                  <thead>
+                    <tr>
+                      <th class="left">Method</th>
+                      <th>B=1 Med. (ms) &darr;</th>
+                      <th>B=1 Mean (ms) &darr;</th>
+                      <th>Geom. / Timed &uarr;</th>
+                      <th>B=32 (req/s) &uarr;</th>
+                      <th>B=64 (req/s) &uarr;</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td class="left">cuRobo</td>
+                      <td>103.84</td>
+                      <td>108.19</td>
+                      <td class="best">100.0 / 100.0</td>
+                      <td>129.99</td>
+                      <td>148.31</td>
+                    </tr>
+                    <tr>
+                      <td class="left">IK+TOPPRA</td>
+                      <td>19.51</td>
+                      <td>26.54</td>
+                      <td>81.2 / 81.2</td>
+                      <td>159.74</td>
+                      <td>146.32</td>
+                    </tr>
+                    <tr class="row-nmg">
+                      <td class="left"><strong>NMG raw</strong></td>
+                      <td class="best">12.31</td>
+                      <td class="best">17.54</td>
+                      <td>93.8 / N/A</td>
+                      <td class="best">362.42</td>
+                      <td class="best">710.15</td>
+                    </tr>
+                    <tr class="row-nmg">
+                      <td class="left"><strong>NMG retimed</strong></td>
+                      <td>21.39</td>
+                      <td>27.40</td>
+                      <td>93.8 / 93.8</td>
+                      <td>263.33</td>
+                      <td>467.37</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <ul class="takeaway-list">
+                <li><strong>3.3 kHz online control:</strong> One fused closed-loop step takes <strong>0.30 ms</strong> at <em>B</em>=1 and <strong>0.40 ms</strong> at <em>B</em>=64.</li>
+                <li><strong>8.4&times; latency, 4.8&times; throughput:</strong> Raw NMG reaches <strong>710.1 req/s</strong> at native <em>B</em>=64 (retimed: <strong>467.4 req/s</strong> vs. cuRobo's 148.3 req/s).</li>
+              </ul>
+            </div>
+
+            <div class="card-box">
+              <h3>Native Batch Scaling (B=32 to B=64)</h3>
+              <p class="card-sub">FullPose <em>K</em>=8 throughput, batch latency, and geometry success.</p>
+              <img class="result-img" src="./assets/images/latency-scaling.png" alt="Native batch scaling plot" data-zoom-src="./assets/images/latency-scaling.png" data-zoom-title="Native Batch Scaling (FullPose K=8, B=32 to B=64)" data-zoom-caption="Serial Franka FR3 FullPose K=8 throughput, batch latency, and geometry success." />
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 4: Learning APG vs PPO -->
+        <div class="tab-panel" id="tab-learning">
+          <div class="result-grid">
+            <div class="card-box">
+              <h3>Learning from Scratch: Kinematic APG vs. PPO</h3>
+              <p class="card-sub">Franka FR3, 500M interactions, 2,048 validation sequences (3 seeds for <em>K</em>=1–8).</p>
+              <img class="result-img" src="./assets/images/learning-main-500m.png" alt="APG vs PPO learning curves, tolerance sweep, and discounted PPO horizon scaling" data-zoom-src="./assets/images/learning-main-500m.png" data-zoom-title="Kinematic APG vs. PPO Diagnostics (500M)" data-zoom-caption="(a) Validation return per constraint; (b) Strict sequence success (K=1–8); (c) K=1 arrival vs. tolerance multiple; (d) Discounted PPO across training ceilings K_max." />
+              <ul class="takeaway-list">
+                <li><strong>Coarse reaching only:</strong> Undiscounted PPO reaches most single targets at 5&times;–15&times; tolerance, but stalls outside strict 1&times; (0.5% overall).</li>
+                <li><strong>Horizon collapse:</strong> Discounted PPO learns single targets (<strong>59.0%</strong> at <em>K</em><sub>max</sub>=1), then collapses below 9% by <em>K</em><sub>max</sub>=3 and under 0.5% at <em>K</em><sub>max</sub>=8.</li>
+                <li><strong>Kinematic APG:</strong> Exact gradients through FK and closed-loop feedback reach <strong>86.7%</strong> strict sequence success across <em>K</em>=1–8 over the same 500M interactions.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 5: Closed-Loop & Context -->
+        <div class="tab-panel" id="tab-behavior">
+          <div class="result-grid">
+            <div class="card-box">
+              <h3>Closed-Loop Perturbation Recovery</h3>
+              <p class="card-sub">Median error returns below strict tolerance in 1 step after a 0.03-rad disturbance (98–100% recovery).</p>
+              <img class="result-img" src="./assets/images/perturbation-recovery.png" alt="Closed-loop perturbation recovery plot" data-zoom-src="./assets/images/perturbation-recovery.png" data-zoom-title="Closed-Loop Perturbation Recovery" data-zoom-caption="Median and IQR normalized error after a 0.03-rad joint perturbation at step 0." />
+            </div>
+            <div class="card-box">
+              <h3>Counterfactual Future-Context Probe</h3>
+              <p class="card-sub">Gated future conditioning learns lookahead (2.24 rad shift) yet lowers overall accuracy by 9.0 pp.</p>
+              <img class="result-img" src="./assets/images/context-tradeoff.png" alt="Future context counterfactual probe" data-zoom-src="./assets/images/context-tradeoff.png" data-zoom-title="Future-Context Counterfactual Probe" data-zoom-caption="Gated future shifts arrival posture by 2.24 rad to cut matched-target steps (3.42 vs. 9.66 swapped; current-only 6.63), yet degrades longer-sequence convergence." />
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BibTeX -->
+    <section class="section" id="bibtex">
+      <div class="container-text">
+        <div class="section-header" style="margin-bottom:1.1rem;">
+          <h2 class="section-title">BibTeX</h2>
+        </div>
+        <div class="bibtex-box">
+          <button class="copy-btn" id="btn-copy-bib" type="button">Copy</button>
+          <pre><code id="bibtex-code"></code></pre>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      Neural Motion Generator (NMG) · Project Page
+    </div>
+  </footer>
+
+  <!-- HD Video / Figure Lightbox -->
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-labelledby="lightbox-title">
+    <div class="lightbox-card">
+      <div class="lightbox-head">
+        <h3 class="lightbox-title" id="lightbox-title">Preview</h3>
+        <button class="lightbox-close" id="lightbox-close" type="button" aria-label="Close modal">&times;</button>
+      </div>
+      <div class="lightbox-media" id="lightbox-media"></div>
+      <div class="lightbox-body">
+        <span id="lightbox-desc"></span>
+        <span class="lightbox-meta" id="lightbox-meta"></span>
+      </div>
+    </div>
+  </div>
+
+  <script src="./site-config.js"></script>
+  <script src="./assets/js/main.js"></script>
+</body>
+</html>

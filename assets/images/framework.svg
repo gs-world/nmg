@@ -1,0 +1,257 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="650" viewBox="0 0 1600 650">
+<title>NMG: framework overview</title>
+<desc>Joint witnesses provide feasible requests without action supervision. A policy maps the active goal and current observation to bounded joint updates. Continuous FK feedback and discrete arrival-driven goal advancement close the loop. Full-horizon APG differentiates the rollout objective, and independent task requests evaluate the trained policy.</desc>
+<rect x="0" y="0" width="1600" height="650" rx="5" fill="#FFFFFF" stroke="none" stroke-width="1.5"/>
+<rect x="20" y="20" width="260" height="490" rx="9" fill="#F5F7F9" stroke="none" stroke-width="1.5"/>
+<rect x="300" y="20" width="970" height="490" rx="9" fill="#F5F7F9" stroke="none" stroke-width="1.5"/>
+<rect x="1290" y="20" width="290" height="490" rx="9" fill="#F5F7F9" stroke="none" stroke-width="1.5"/>
+<rect x="20" y="540" width="1560" height="92" rx="9" fill="#F5F7F9" stroke="none" stroke-width="1.5"/>
+<g fill="#27313B" font-family="Liberation Serif, Times New Roman, serif">
+<text x="34.000" y="59.000" font-size="27" font-weight="700">(a) Feasible targets</text>
+</g>
+<g fill="#27313B" font-family="Liberation Serif, Times New Roman, serif">
+<text x="318.000" y="59.000" font-size="27" font-weight="700">(b) Closed-loop rollout</text>
+</g>
+<g fill="#526579" font-family="Liberation Serif, Times New Roman, serif">
+<text x="1159.384" y="59.188" font-size="25" font-style="italic">H</text>
+<text x="1177.438" y="59.188" font-size="25"> = </text>
+<text x="1204.037" y="59.188" font-size="25" font-style="italic">KL</text>
+</g>
+<g fill="#27313B" font-family="Liberation Serif, Times New Roman, serif">
+<text x="1304.000" y="59.000" font-size="27" font-weight="700">(c) Full-horizon APG</text>
+</g>
+<g fill="#27313B" font-family="Liberation Serif, Times New Roman, serif">
+<text x="74.682" y="146.918" font-size="29">Robot model</text>
+</g>
+<path d="M 150 157 L 150 188" fill="none" stroke="#4D5964" stroke-width="1.6"/>
+<polygon points="150.000,188.000 153.400,179.000 146.600,179.000" fill="#4D5964"/>
+<rect x="45" y="188" width="210" height="92" rx="5" fill="#F1ECE5" stroke="none" stroke-width="1.5"/>
+<g fill="#6C5746" font-family="Liberation Serif, Times New Roman, serif">
+<text x="71.638" y="221.476" font-size="26">Joint witnesses</text>
+</g>
+<g fill="#6C5746" font-family="Liberation Serif, Times New Roman, serif">
+<text x="86.341" y="256.411" font-size="28">(</text>
+</g>
+<g fill="#6C5746" font-family="Liberation Serif, Times New Roman, serif">
+<text x="95.665" y="256.411" font-size="28" font-style="italic">q</text>
+</g>
+<g fill="#6C5746" font-family="Liberation Serif, Times New Roman, serif">
+<text x="109.665" y="262.851" font-size="17.08" font-style="italic">0</text>
+</g>
+<g fill="#6C5746" font-family="Liberation Serif, Times New Roman, serif">
+<text x="109.665" y="245.211" font-size="17.08">w</text>
+</g>
+<g fill="#6C5746" font-family="Liberation Serif, Times New Roman, serif">
+<text x="122.000" y="256.411" font-size="28">, …, </text>
+</g>
+<g fill="#6C5746" font-family="Liberation Serif, Times New Roman, serif">
+<text x="178.000" y="256.411" font-size="28" font-style="italic">q</text>
+</g>
+<g fill="#6C5746" font-family="Liberation Serif, Times New Roman, serif">
+<text x="192.000" y="262.851" font-size="17.08" font-style="italic">K</text>
+</g>
+<g fill="#6C5746" font-family="Liberation Serif, Times New Roman, serif">
+<text x="192.000" y="245.211" font-size="17.08">w</text>
+</g>
+<g fill="#6C5746" font-family="Liberation Serif, Times New Roman, serif">
+<text x="204.335" y="256.411" font-size="28">)</text>
+</g>
+<path d="M 150 280 L 150 355" fill="none" stroke="#4D5964" stroke-width="1.6"/>
+<polygon points="150.000,355.000 153.400,346.000 146.600,346.000" fill="#4D5964"/>
+<g fill="#526579" font-family="Liberation Serif, Times New Roman, serif">
+<text x="162.000" y="323.000" font-size="24">FK / direct</text>
+</g>
+<rect x="45" y="355" width="210" height="100" rx="5" fill="#E8F0F6" stroke="none" stroke-width="1.5"/>
+<g fill="#27313B" font-family="Liberation Serif, Times New Roman, serif">
+<text x="106.507" y="388.967" font-size="27">Request</text>
+</g>
+<g fill="#27313B" font-family="Liberation Serif, Times New Roman, serif">
+<text x="108.413" y="431.238" font-size="31">(</text>
+<text x="118.737" y="431.238" font-size="31" font-style="italic">q</text>
+<text x="134.237" y="438.058" font-size="21.7" font-style="italic">0</text>
+<text x="145.087" y="431.238" font-size="31">, </text>
+<text x="160.587" y="431.238" font-size="31" font-style="italic">C</text>
+<text x="181.263" y="431.238" font-size="31">)</text>
+</g>
+<path d="M 255 405 L 292 405 L 292 246 L 320 246" fill="none" stroke="#4D5964" stroke-width="1.6"/>
+<polygon points="320.000,246.000 311.000,242.600 311.000,249.400" fill="#4D5964"/>
+<g fill="#27313B" font-family="Liberation Serif, Times New Roman, serif">
+<text x="259.663" y="395.163" font-size="25" font-style="italic">C</text>
+</g>
+<rect x="320" y="200" width="108" height="92" rx="7" fill="#E8F0F6" stroke="#71869E" stroke-width="1.5"/>
+<g fill="#27313B" font-family="Liberation Serif, Times New Roman, serif">
+<text x="341.015" y="234.234" font-size="27">Select</text>
+</g>
+<g fill="#27313B" font-family="Liberation Serif, Times New Roman, serif">
+<text x="361.279" y="266.522" font-size="29" font-style="italic">c</text>
+<text x="374.150" y="272.902" font-size="20.299999999999997" font-style="italic">i</text>
+<text x="379.790" y="272.902" font-size="14.5"> </text>
+<text x="382.693" y="278.992" font-size="14.5" font-style="italic">t</text>
+</g>
+<path d="M 428 246 L 460 246" fill="none" stroke="#4D5964" stroke-width="1.6"/>
+<polygon points="460.000,246.000 451.000,242.600 451.000,249.400" fill="#4D5964"/>
+<rect x="460" y="190" width="155" height="112" rx="7" fill="#E8F0F6" stroke="#71869E" stroke-width="1.5"/>
+<g fill="#27313B" font-family="Liberation Serif, Times New Roman, serif">
+<text x="471.516" y="232.234" font-size="27">Observation</text>
+</g>
+<g fill="#27313B" font-family="Liberation Serif, Times New Roman, serif">
+<text x="526.388" y="273.904" font-size="32" font-style="italic">o</text>
+<text x="542.388" y="280.944" font-size="22.4" font-style="italic">t</text>
+</g>
+<g fill="#27313B" font-family="Liberation Serif, Times New Roman, serif">
+<text x="526.025" y="155.294" font-size="27" font-style="italic">q</text>
+<text x="539.525" y="161.234" font-size="18.9" font-style="italic">0</text>
+</g>
+<path d="M 537.5 169 L 537.5 190" fill="none" stroke="#4D5964" stroke-width="1.6"/>
+<polygon points="537.500,190.000 540.900,181.000 534.100,181.000" fill="#4D5964"/>
+<path d="M 615 246 L 648 246" fill="none" stroke="#4D5964" stroke-width="1.6"/>
+<polygon points="648.000,246.000 639.000,242.600 639.000,249.400" fill="#4D5964"/>
+<rect x="648" y="190" width="165" height="112" rx="16" fill="#E8F0F6" stroke="#71869E" stroke-width="1.5"/>
+<g fill="#27313B" font-family="Liberation Serif, Times New Roman, serif">
+<text x="693.443" y="226.931" font-size="29">Policy</text>
+</g>
+<g fill="#35638C" font-family="Liberation Serif, Times New Roman, serif">
+<text x="675.793" y="276.538" font-size="28" font-style="italic">v</text>
+<text x="688.221" y="282.698" font-size="19.599999999999998" font-style="italic">t</text>
+<text x="693.667" y="276.538" font-size="28"> = </text>
+<text x="723.458" y="276.538" font-size="28" font-style="italic">π</text>
+<text x="737.485" y="282.698" font-size="19.599999999999998" font-style="italic">θ</text>
+<text x="747.113" y="276.538" font-size="28">(</text>
+<text x="756.437" y="276.538" font-size="28" font-style="italic">o</text>
+<text x="770.437" y="282.698" font-size="19.599999999999998" font-style="italic">t</text>
+<text x="775.882" y="276.538" font-size="28">)</text>
+</g>
+<path d="M 813 246 L 844 246" fill="none" stroke="#4D5964" stroke-width="1.6"/>
+<polygon points="844.000,246.000 835.000,242.600 835.000,249.400" fill="#4D5964"/>
+<rect x="844" y="220" width="70" height="52" rx="3" fill="#FFFFFF" stroke="#71869E" stroke-width="1.5"/>
+<g fill="#27313B" font-family="Liberation Serif, Times New Roman, serif">
+<text x="854.896" y="255.576" font-size="28">tanh</text>
+</g>
+<path d="M 914 246 L 950 246" fill="none" stroke="#4D5964" stroke-width="1.6"/>
+<polygon points="950.000,246.000 941.000,242.600 941.000,249.400" fill="#4D5964"/>
+<g fill="#35638C" font-family="Liberation Serif, Times New Roman, serif">
+<text x="922.972" y="228.016" font-size="26" font-style="italic">u</text>
+<text x="935.972" y="233.736" font-size="18.2" font-style="italic">t</text>
+</g>
+<rect x="950" y="190" width="290" height="112" rx="16" fill="#FFFFFF" stroke="#71869E" stroke-width="1.5"/>
+<g fill="#27313B" font-family="Liberation Serif, Times New Roman, serif">
+<text x="995.872" y="226.734" font-size="28">Kinematic update</text>
+</g>
+<g fill="#27313B" font-family="Liberation Serif, Times New Roman, serif">
+<text x="980.198" y="273.015" font-size="26" font-style="italic">q</text>
+<text x="993.198" y="278.735" font-size="18.2" font-style="italic">t+1</text>
+<text x="1019.636" y="273.015" font-size="26"> = </text>
+<text x="1047.299" y="273.015" font-size="26" font-style="italic">Π</text>
+<path d="M287 -59Q272 -51 272 -43Q272 -9 332.5 24.0Q393 57 428 61Q590 61 690.5 69.5Q791 78 896.0 113.5Q1001 149 1098 225Q1241 345 1323.0 508.5Q1405 672 1405 854Q1405 946 1379.0 1031.5Q1353 1117 1301.5 1182.5Q1250 1248 1172.0 1285.5Q1094 1323 997 1323Q846 1323 711.0 1225.5Q576 1128 496.0 978.0Q416 828 416 678Q416 585 453.5 505.0Q491 425 562.0 377.5Q633 330 729 330Q793 330 877 358Q905 372 924.0 381.5Q943 391 964.0 400.0Q985 409 1008 410H1020Q1034 403 1034 395Q1034 385 1026 373Q994 329 915.0 291.5Q836 254 745.5 231.5Q655 209 592 209H580Q474 209 395.0 260.5Q316 312 274.5 398.0Q233 484 233 588Q233 745 312.5 899.0Q392 1053 526.5 1177.5Q661 1302 821.5 1373.0Q982 1444 1135 1444H1145Q1251 1444 1333.5 1405.0Q1416 1366 1473.0 1296.5Q1530 1227 1558.5 1136.5Q1587 1046 1587 942Q1587 778 1523.0 624.5Q1459 471 1349.5 349.0Q1240 227 1097.0 136.0Q954 45 793 -6Q836 -20 909.5 -46.0Q983 -72 1051.5 -92.5Q1120 -113 1184.0 -124.5Q1248 -136 1315 -137Q1365 -137 1391 -115Q1411 -94 1420.5 -66.5Q1430 -39 1440 -25Q1466 10 1507.0 33.0Q1548 56 1589 61H1599Q1614 54 1614 41Q1591 -43 1519.5 -111.5Q1448 -180 1355.5 -219.0Q1263 -258 1180 -258H1169Q1067 -258 973.5 -234.5Q880 -211 734.0 -160.0Q588 -109 493.0 -84.0Q398 -59 287 -59Z" transform="translate(1066.075 278.735) scale(0.00888671875 -0.00888671875)" aria-label="calligraphic Q"/>
+<text x="1080.925" y="273.015" font-size="26">(</text>
+<text x="1089.583" y="273.015" font-size="26" font-style="italic">q</text>
+<text x="1102.583" y="278.735" font-size="18.2" font-style="italic">t</text>
+<text x="1107.639" y="273.015" font-size="26"> + </text>
+<text x="1135.303" y="273.015" font-size="26" font-style="italic">b</text>
+<text x="1148.303" y="273.015" font-size="26"> </text>
+<text x="1154.803" y="273.015" font-size="26" font-family="DejaVu Serif, serif">⊙</text>
+<text x="1176.588" y="273.015" font-size="26"> </text>
+<text x="1183.088" y="273.015" font-size="26" font-style="italic">u</text>
+<text x="1196.088" y="278.735" font-size="18.2" font-style="italic">t</text>
+<text x="1201.144" y="273.015" font-size="26">)</text>
+</g>
+<path d="M 1095 302 L 1095 350 L 537.5 350 L 537.5 302" fill="none" stroke="#4D5964" stroke-width="1.6"/>
+<polygon points="537.500,302.000 534.100,311.000 540.900,311.000" fill="#4D5964"/>
+<g fill="#526579" font-family="Liberation Serif, Times New Roman, serif">
+<text x="681.005" y="381.962" font-size="25" font-style="italic">q</text>
+<text x="693.505" y="387.462" font-size="17.5" font-style="italic">t+1</text>
+<text x="718.927" y="381.962" font-size="25">: FK + relative features</text>
+</g>
+<path d="M 1095 350 L 1095 406" fill="none" stroke="#4D5964" stroke-width="1.6"/>
+<polygon points="1095.000,406.000 1098.400,397.000 1091.600,397.000" fill="#4D5964"/>
+<rect x="950" y="406" width="290" height="80" rx="6" fill="#EEF1F4" stroke="#98A4B0" stroke-width="1.5"/>
+<g fill="#27313B" font-family="Liberation Serif, Times New Roman, serif">
+<text x="991.548" y="436.234" font-size="27">Advance on arrival</text>
+</g>
+<g fill="#27313B" font-family="Liberation Serif, Times New Roman, serif">
+<text x="1028.922" y="467.645" font-size="27" font-style="italic">q</text>
+<text x="1042.422" y="473.585" font-size="18.9" font-style="italic">t+1</text>
+<text x="1069.877" y="467.645" font-size="27"> </text>
+<text x="1076.627" y="467.645" font-size="27" font-family="DejaVu Serif, serif">∈</text>
+<text x="1096.613" y="467.645" font-size="27"> </text>
+<path d="M109 -156Q104 -153 104 -143Q104 -109 164.0 -76.0Q224 -43 262 -39H272Q369 -86 429.5 -104.5Q490 -123 580 -123Q625 -123 651 -111Q725 -63 784.0 61.5Q843 186 883 317Q789 240 674.5 189.5Q560 139 449 139Q329 139 248.5 195.0Q168 251 129.0 345.5Q90 440 90 557Q90 731 160.0 892.0Q230 1053 351.5 1177.0Q473 1301 633.5 1372.5Q794 1444 967 1444H979Q1081 1444 1155.0 1416.0Q1229 1388 1229 1307Q1229 1268 1203.5 1214.0Q1178 1160 1141.5 1109.0Q1105 1058 1071 1024Q1011 971 944 965H934Q920 972 920 979Q920 989 958.0 1042.0Q996 1095 1021.5 1138.5Q1047 1182 1047 1217Q1047 1282 981.0 1302.5Q915 1323 829 1323Q737 1323 661.5 1298.0Q586 1273 525.0 1224.0Q464 1175 412 1098Q346 999 309.0 879.5Q272 760 272 645Q272 569 291.0 501.0Q310 433 349.5 378.0Q389 323 448.0 291.5Q507 260 586 260Q658 260 721.0 295.0Q784 330 834.5 388.5Q885 447 921.5 520.0Q958 593 975 659Q986 695 1038.5 726.0Q1091 757 1133 760H1143Q1157 753 1157 741Q1126 613 1109.5 547.5Q1093 482 1069.0 404.5Q1045 327 1011.0 242.0Q977 157 938 90Q886 -3 810.5 -79.0Q735 -155 642.0 -199.5Q549 -244 444 -244H434Q255 -244 109 -156Z" transform="translate(1103.363 467.645) scale(0.01318359375 -0.01318359375)" aria-label="calligraphic G"/>
+<text x="1119.407" y="467.645" font-size="27">(</text>
+<text x="1128.399" y="467.645" font-size="27" font-style="italic">c</text>
+<text x="1140.383" y="473.585" font-size="18.9" font-style="italic">i</text>
+<text x="1145.634" y="473.585" font-size="13.5"> </text>
+<text x="1148.336" y="479.255" font-size="13.5" font-style="italic">t</text>
+<text x="1152.087" y="467.645" font-size="27">)</text>
+</g>
+<path d="M 950 446 L 374 446 L 374 292" fill="none" stroke="#4D5964" stroke-width="1.6"/>
+<polygon points="374.000,292.000 370.600,301.000 377.400,301.000" fill="#4D5964"/>
+<g fill="#27313B" font-family="Liberation Serif, Times New Roman, serif">
+<text x="647.522" y="433.873" font-size="27" font-style="italic">i</text>
+<text x="655.023" y="439.812" font-size="18.9" font-style="italic">t+1</text>
+</g>
+<path d="M 1240 246 L 1380 246" fill="none" stroke="#4D5964" stroke-width="1.6"/>
+<polygon points="1380.000,246.000 1371.000,242.600 1371.000,249.400" fill="#4D5964"/>
+<rect x="1380" y="200" width="110" height="92" rx="5" fill="#E7F1EC" stroke="none" stroke-width="1.5"/>
+<g fill="#376854" font-family="Liberation Serif, Times New Roman, serif">
+<text x="1423.035" y="251.002" font-size="41" font-style="italic">r</text>
+<text x="1438.991" y="260.022" font-size="28.7" font-style="italic">t</text>
+</g>
+<g fill="#526579" font-family="Liberation Serif, Times New Roman, serif">
+<text x="1423.156" y="152.486" font-size="27" font-style="italic">c</text>
+<text x="1435.140" y="158.426" font-size="18.9" font-style="italic">i</text>
+<text x="1440.391" y="158.426" font-size="13.5"> </text>
+<text x="1443.093" y="164.096" font-size="13.5" font-style="italic">t</text>
+</g>
+<path d="M 1435 169 L 1435 200" fill="none" stroke="#4D5964" stroke-width="1.6"/>
+<polygon points="1435.000,200.000 1438.400,191.000 1431.600,191.000" fill="#4D5964"/>
+<path d="M 1435 292 L 1435 350" fill="none" stroke="#376854" stroke-width="1.6"/>
+<polygon points="1435.000,350.000 1438.400,341.000 1431.600,341.000" fill="#376854"/>
+<rect x="1355" y="350" width="160" height="92" rx="5" fill="#E7F1EC" stroke="none" stroke-width="1.5"/>
+<g fill="#376854" font-family="Liberation Serif, Times New Roman, serif">
+<text x="1398.390" y="406.354" font-size="39" font-family="DejaVu Sans, sans-serif">ℒ</text>
+<text x="1426.478" y="406.354" font-size="39">(</text>
+<text x="1439.466" y="406.354" font-size="39" font-style="italic">θ</text>
+<text x="1458.623" y="406.354" font-size="39">)</text>
+</g>
+<path d="M 1515 396 L 1560 396 L 1560 115 L 730.5 115 L 730.5 190" fill="none" stroke="#35638C" stroke-width="1.6" stroke-dasharray="7 6"/>
+<polygon points="730.500,190.000 733.900,181.000 727.100,181.000" fill="#35638C"/>
+<g fill="#35638C" font-family="Liberation Serif, Times New Roman, serif">
+<text x="1024.354" y="101.736" font-size="24">Pathwise gradient</text>
+</g>
+<g fill="#27313B" font-family="Liberation Serif, Times New Roman, serif">
+<text x="78.227" y="579.547" font-size="27" font-weight="700">Independent</text>
+</g>
+<g fill="#27313B" font-family="Liberation Serif, Times New Roman, serif">
+<text x="90.995" y="610.867" font-size="27" font-weight="700">evaluation</text>
+</g>
+<rect x="320" y="552" width="295" height="70" rx="5" fill="#E8F0F6" stroke="none" stroke-width="1.5"/>
+<g fill="#27313B" font-family="Liberation Serif, Times New Roman, serif">
+<text x="399.116" y="579.013" font-size="25">Task requests</text>
+</g>
+<g fill="#27313B" font-family="Liberation Serif, Times New Roman, serif">
+<text x="432.621" y="608.071" font-size="26">(</text>
+<text x="441.279" y="608.071" font-size="26" font-style="italic">q</text>
+<text x="454.279" y="613.791" font-size="18.2" font-style="italic">0</text>
+<text x="463.379" y="608.071" font-size="26">, </text>
+<text x="476.379" y="608.071" font-size="26" font-style="italic">C</text>
+<text x="493.721" y="608.071" font-size="26">)</text>
+</g>
+<path d="M 615 587 L 720 587" fill="none" stroke="#4D5964" stroke-width="1.6"/>
+<polygon points="720.000,587.000 711.000,583.600 711.000,590.400" fill="#4D5964"/>
+<rect x="720" y="552" width="300" height="70" rx="17" fill="#E8F0F6" stroke="#71869E" stroke-width="1.5"/>
+<g fill="#35638C" font-family="Liberation Serif, Times New Roman, serif">
+<text x="785.046" y="593.931" font-size="29">Trained policy</text>
+</g>
+<path d="M 1020 587 L 1175 587" fill="none" stroke="#4D5964" stroke-width="1.6"/>
+<polygon points="1175.000,587.000 1166.000,583.600 1166.000,590.400" fill="#4D5964"/>
+<rect x="1175" y="552" width="360" height="70" rx="5" fill="#EEF1F4" stroke="none" stroke-width="1.5"/>
+<g fill="#27313B" font-family="Liberation Serif, Times New Roman, serif">
+<text x="1270.506" y="593.771" font-size="29" font-style="italic">τ</text>
+<text x="1280.885" y="593.771" font-size="29"> = (</text>
+<text x="1321.397" y="593.771" font-size="29" font-style="italic">q</text>
+<text x="1335.897" y="600.151" font-size="20.299999999999997" font-style="italic">0</text>
+<text x="1346.047" y="593.771" font-size="29">, …, </text>
+<text x="1404.047" y="593.771" font-size="29" font-style="italic">q</text>
+<text x="1418.547" y="600.151" font-size="20.299999999999997" font-style="italic">T</text>
+<text x="1429.837" y="593.771" font-size="29">)</text>
+</g>
+</svg>
