@@ -24,6 +24,8 @@ window.NMG_SITE_CONFIG = {
     { name: "Chen Yang", url: "", affilIds: [1, 2] },
     { name: "Yueci Deng", url: "", affilIds: [1, 2] },
     { name: "Xudong Han", url: "", affilIds: [2, 3] },
+    { name: "Jian Chen", url: "", affilIds: [2] },
+    { name: "Jietao Chen", url: "", affilIds: [2] },
     { name: "Kui Jia", url: "", affilIds: [1, 2] },
     { name: "Guiliang Liu", url: "", affilIds: [1] }
   ],
@@ -58,7 +60,7 @@ window.NMG_SITE_CONFIG = {
 
   bibtexPublic: `@article{yang2026nmg,
   title   = {Neural Motion Generator: Learning Ordered Constraint Satisfaction without Demonstrations},
-  author  = {Chen Yang and Yueci Deng and Xudong Han and Kui Jia and Guiliang Liu},
+  author  = {Chen Yang and Yueci Deng and Xudong Han and Jian Chen and Jietao Chen and Kui Jia and Guiliang Liu},
   journal = {arXiv preprint},
   year    = {2026}
 }`
