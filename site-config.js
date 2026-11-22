@@ -5,7 +5,7 @@
  * for arXiv / public release.
  */
 window.NMG_SITE_CONFIG = {
-  anonymous: true,
+  anonymous: false,
 
   title: "Neural Motion Generator",
   subtitle: "Learning Ordered Constraint Satisfaction without Demonstrations",
@@ -19,13 +19,13 @@ window.NMG_SITE_CONFIG = {
     { name: "Anonymous Authors", affiliation: "" }
   ],
 
-  // Used when anonymous === false (fill in before arXiv / public release)
+  // Used when anonymous === false
   publicAuthors: [
-    { name: "First Author", url: "", affilIds: [1] },
-    { name: "Second Author", url: "", affilIds: [1] }
+    { name: "Chen Yang", url: "", affilIds: [1, 2] }
   ],
   affiliations: [
-    { id: 1, name: "Institution" }
+    { id: 1, name: "The Chinese University of Hong Kong, Shenzhen" },
+    { id: 2, name: "Dexforce" }
   ],
 
   // Header action buttons (add Paper arXiv / Code URLs once published)
@@ -51,9 +51,9 @@ window.NMG_SITE_CONFIG = {
   year    = {2026}
 }`,
 
-  bibtexPublic: `@article{nmg2026,
+  bibtexPublic: `@article{yang2026nmg,
   title   = {Neural Motion Generator: Learning Ordered Constraint Satisfaction without Demonstrations},
-  author  = {First Author and Second Author},
+  author  = {Chen Yang},
   journal = {arXiv preprint},
   year    = {2026}
 }`
