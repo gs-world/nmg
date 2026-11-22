@@ -109,15 +109,15 @@
               <span class="accent-sage">+4.4 pp</span>
             </div>
             <div class="metric-label">
-              PiPER Atomic reaching over cuRobo (90.9% vs. 86.5%)
+              Top PiPER Atomic reaching: 90.9% vs. 89.9% DLS-JL &amp; 86.5% cuRobo
             </div>
           </div>
           <div class="metric-card">
             <div class="metric-value">
-              <span class="accent-ochre">3.3 kHz</span> <span class="sub-vs">8.4&times; faster</span>
+              <span class="accent-ochre">0.30 ms</span> <span class="sub-vs">8.4&times; faster</span>
             </div>
             <div class="metric-label">
-              Compiled CUDA-Graph step; 8.4&times; faster than cuRobo (<em>B</em>=1), 4.8&times; throughput (<em>B</em>=64)
+              Compiled CUDA-Graph policy step (3.3k steps/s); 8.4&times; faster than cuRobo (<em>B</em>=1), 4.8&times; throughput (<em>B</em>=64)
             </div>
           </div>
         </div>
@@ -128,10 +128,10 @@
           </div>
           <div class="abstract-text">
             <p>
-              Learned motion planners typically imitate offline experts, inheriting solver biases and data bottlenecks, whereas model-free RL struggles to reach tight sequential tolerances from scratch. We present <strong>Neural Motion Generator (NMG)</strong>, which trains a closed-loop, multi-constraint motion policy from scratch using only differentiable forward kinematics, with no demonstrations or task data.
+              Learned motion generators typically imitate offline planners, inheriting their solver biases and data costs, while model-free reinforcement learning struggles to meet tight arrival tolerances over multi-goal sequences. We present <strong>Neural Motion Generator (NMG)</strong>, which trains one closed-loop policy per robot to satisfy variable-length, ordered sequences of joint, position, orientation, and full-pose constraints from random initialization, without demonstrations or task data.
             </p>
             <p>
-              Random bounded joint chains projected through forward kinematics generate guaranteed-feasible sequences of joint, position, orientation, and full-pose goals, while full-horizon analytic policy gradients (APG) optimize one policy end-to-end across complete rollouts. On Franka FR3 under a 500M-interaction budget, APG reaches <strong>86.7%</strong> strict success across <em>K</em>=1–8 targets where PPO stalls below <strong>0.6%</strong>. Evaluated zero-shot across Franka FR3 and 6-DoF PiPER, NMG exceeds <strong>98%</strong> success on <em>K</em>=1–8 free-space sequences, matches cuRobo on three of five Franka manipulation tasks while outperforming cuRobo overall on PiPER (<strong>90.9%</strong> vs. 86.5%), and recovers from joint disturbances in closed loop. Compiled into a CUDA Graph, NMG runs at <strong>3.3 kHz</strong> per control step, beating cuRobo by <strong>8.4&times;</strong> in single-query latency (4.9&times; retimed) and <strong>4.8&times;</strong> in batched throughput at <em>B</em>=64 (3.2&times; retimed).
+              NMG uses differentiable forward kinematics twice: to sample guaranteed-feasible goal sequences from bounded joint chains, and to backpropagate dense arrival costs across complete rollouts with analytic policy gradients (APG). Under a matched budget on Franka FR3, APG reaches <strong>86.7%</strong> strict sequence success where PPO stays below <strong>0.6%</strong>. Evaluated zero-shot on an obstacle-free kinematic benchmark across 7-DoF Franka FR3 and 6-DoF PiPER, NMG exceeds <strong>98%</strong> free-space success (+15 points over closed-loop differential IK on Franka full-pose sequences), extrapolates to unseen sequence lengths, recovers from <strong>1.0 rad</strong> joint disturbances, and transfers to manipulation-derived reaching tasks&mdash;surpassing cuRobo and differential IK on PiPER while trailing both on Franka. With constant per-step cost, compiled rollouts plan eight-goal full-pose sequences <strong>8.4&times;</strong> faster than cuRobo (4.9&times; retimed) at <strong>4.8&times;</strong> higher batched throughput.
             </p>
           </div>
         </div>
@@ -158,7 +158,7 @@
         <div class="figure-frame" data-zoom-src="./assets/images/policy-arch.svg?v=3" data-zoom-title="Unified Four-Token Feedback Policy Architecture" data-zoom-caption="(a) Four-token Transformer policy with normalize-then-mask input and bounded tanh output; (b) optional gated future-context ablation branch.">
           <img src="./assets/images/policy-arch.svg?v=3" alt="Unified Four-Token Feedback Policy Architecture Diagram" />
           <p class="figure-caption">
-            <strong>Figure 2. Unified four-token policy architecture.</strong> (a) Active constraint features are normalized then masked and fed alongside robot state into a four-token Transformer encoder at <em>O</em>(1) cost independent of <em>K</em>. (b) An optional gated cross-attention branch injects future-goal residuals for the lookahead ablation.
+            <strong>Figure 2. Unified four-token policy architecture.</strong> (a) Active constraint features are normalized then masked and split into an <em>active-goal</em> token (continuous progress, read out directly into the actor) and an <em>active-slot</em> token (shared per-slot sequence and modality embeddings), processed alongside robot state and an action query at <em>O</em>(1) cost independent of <em>K</em>. (b) An optional gated cross-attention branch injects future-goal residuals for the lookahead ablation.
           </p>
         </div>
       </div>
@@ -177,9 +177,10 @@
         <div class="tabs-bar" role="tablist">
           <button class="tab-btn active" data-tab="freespace">Free-Space (K=1–12)</button>
           <button class="tab-btn" data-tab="atomic">Atomic Reaching</button>
+          <button class="tab-btn" data-tab="dls">Closed-Loop IK</button>
           <button class="tab-btn" data-tab="runtime">Runtime &amp; Scaling</button>
           <button class="tab-btn" data-tab="learning">APG vs. PPO</button>
-          <button class="tab-btn" data-tab="behavior">Closed-Loop &amp; Context</button>
+          <button class="tab-btn" data-tab="behavior">Perturbations &amp; Context</button>
         </div>
 
         <!-- TAB 1: Free-Space -->
@@ -276,6 +277,7 @@
               </div>
               <ul class="takeaway-list">
                 <li>Exceeds <strong>98%</strong> on <em>K</em>=1–8 (+20 pp over IK+TOPPRA) with zero Orientation failures and zero joint-limit violations across all 8,424 requests per robot.</li>
+                <li><strong>Beats closed-loop differential IK on FullPose:</strong> On Franka FullPose (<em>K</em>=1–8), NMG reaches <strong>94.1%</strong> vs. <strong>77.2%</strong> (DLS) and <strong>78.9%</strong> (joint-limit-aware DLS-JL) at matched ~0.30 ms compiled step cost.</li>
               </ul>
             </div>
 
@@ -371,7 +373,7 @@
                 </table>
               </div>
               <ul class="takeaway-list">
-                <li><strong>+4.4 pp over cuRobo</strong> on 6-DoF PiPER (Transport +12.5 pp, AxisAlign +15.9 pp); matches cuRobo on Franka PickUp, Transport, and Place (99.0–99.7%).</li>
+                <li><strong>Top overall on 6-DoF PiPER:</strong> <strong>90.9%</strong> retimed (<strong>90.8%</strong> raw) beats cuRobo (86.5%, +4.4 pp), closed-loop DLS (74.3%, +16.5 pp), and joint-limit-aware DLS-JL (89.9%); matches cuRobo on Franka PickUp, Transport, and Place (99.0–99.7%) while trailing cuRobo and DLS-JL (99.0%) overall on Franka due to Pour (54.4%) and AxisAlign (89.1%).</li>
               </ul>
             </div>
 
@@ -381,6 +383,143 @@
               <img class="result-img" src="./assets/images/teaser.png" alt="NMG 2x2 Teaser Figure" data-zoom-src="./assets/images/teaser.png" data-zoom-title="NMG 2×2 Atomic Reaching Composite" data-zoom-caption="Multi-exposure renders of NMG policies executing unseen Atomic reaching sequences on Franka FR3 (Place, Pour) and PiPER V100 (Transport, AxisAlign)." />
               <ul class="takeaway-list">
                 <li><strong>Complementary bottlenecks:</strong> PiPER cuRobo fails at grasp (waypoint 2) whereas NMG completes grasp/lift cleanly; Franka Pour misses localize to one narrow translation pocket.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 3: Closed-Loop Differential IK Comparison (Paper Table 4) -->
+        <div class="tab-panel" id="tab-dls">
+          <div class="result-grid">
+            <div class="card-box">
+              <h3>Closed-Loop Differential IK Comparison (Identical Feedback Contract)</h3>
+              <p class="card-sub">
+                Matched per-step action bound (<em>b<sub>j</sub></em> = 0.2 rad), joint-limit clipping, 30<em>K</em> step horizon, and strict sequential arrival. DLS and DLS-JL hyperparameters are tuned solely on each robot's 2,048-episode internal development set (Dev. 1–8).
+              </p>
+              <div class="table-wrap">
+                <table class="academic-table">
+                  <thead>
+                    <tr>
+                      <th rowspan="2">Robot</th>
+                      <th rowspan="2" class="left">Method</th>
+                      <th rowspan="2">Dev. 1–8</th>
+                      <th colspan="3">Free-Space Geom. (%)</th>
+                      <th colspan="4">Atomic Reaching (%)</th>
+                    </tr>
+                    <tr>
+                      <th>1–8</th>
+                      <th>9–12</th>
+                      <th>Pose 1–8</th>
+                      <th>PickUp</th>
+                      <th>Pour</th>
+                      <th>AxisAlign</th>
+                      <th>Mean</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Franka</td>
+                      <td class="left">DLS</td>
+                      <td>83.4</td>
+                      <td>93.7</td>
+                      <td>93.7</td>
+                      <td>77.2</td>
+                      <td class="best">100.0</td>
+                      <td>78.1</td>
+                      <td>99.5</td>
+                      <td>95.3</td>
+                    </tr>
+                    <tr>
+                      <td></td>
+                      <td class="left">DLS-JL</td>
+                      <td class="best">88.4</td>
+                      <td>94.4</td>
+                      <td>94.0</td>
+                      <td>78.9</td>
+                      <td class="best">100.0</td>
+                      <td class="best">96.4</td>
+                      <td class="best">100.0</td>
+                      <td class="best">99.0</td>
+                    </tr>
+                    <tr class="row-nmg">
+                      <td></td>
+                      <td class="left"><strong>NMG raw</strong></td>
+                      <td>87.2</td>
+                      <td class="best">98.2</td>
+                      <td>94.9</td>
+                      <td>94.1</td>
+                      <td>99.5</td>
+                      <td>54.4</td>
+                      <td>89.1</td>
+                      <td>88.3</td>
+                    </tr>
+                    <tr class="row-nmg">
+                      <td></td>
+                      <td class="left"><strong>NMG retimed</strong></td>
+                      <td>87.2</td>
+                      <td class="best">98.2</td>
+                      <td class="best">95.0</td>
+                      <td class="best">94.2</td>
+                      <td>99.5</td>
+                      <td>54.4</td>
+                      <td>89.1</td>
+                      <td>88.3</td>
+                    </tr>
+                    <tr class="group-sep">
+                      <td>PiPER</td>
+                      <td class="left">DLS</td>
+                      <td>83.5</td>
+                      <td>97.9</td>
+                      <td class="best">97.7</td>
+                      <td class="best">92.2</td>
+                      <td>75.0</td>
+                      <td>88.3</td>
+                      <td>18.5</td>
+                      <td>74.3</td>
+                    </tr>
+                    <tr>
+                      <td></td>
+                      <td class="left">DLS-JL</td>
+                      <td>86.4</td>
+                      <td>97.9</td>
+                      <td>97.3</td>
+                      <td>91.3</td>
+                      <td>93.2</td>
+                      <td class="best">89.6</td>
+                      <td class="best">71.9</td>
+                      <td>89.9</td>
+                    </tr>
+                    <tr class="row-nmg">
+                      <td></td>
+                      <td class="left"><strong>NMG raw</strong></td>
+                      <td class="best">91.8</td>
+                      <td class="best">98.1</td>
+                      <td>97.3</td>
+                      <td>92.0</td>
+                      <td class="best">100.0</td>
+                      <td>89.3</td>
+                      <td>71.1</td>
+                      <td>90.8</td>
+                    </tr>
+                    <tr class="row-nmg">
+                      <td></td>
+                      <td class="left"><strong>NMG retimed</strong></td>
+                      <td class="best">91.8</td>
+                      <td class="best">98.1</td>
+                      <td>97.3</td>
+                      <td>92.1</td>
+                      <td class="best">100.0</td>
+                      <td>89.3</td>
+                      <td>71.1</td>
+                      <td class="best">90.9</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <ul class="takeaway-list">
+                <li><strong>Franka Free-Space FullPose (+15.2 pp):</strong> Both local Jacobian controllers stall in singular and joint-limit basins on multi-goal FullPose sequences (<strong>77.2%</strong> DLS and <strong>78.9%</strong> DLS-JL vs. NMG's <strong>94.1%</strong>).</li>
+                <li><strong>7-DoF Franka Atomic:</strong> On unobstructed table-top reaching, <code>DLS-JL</code> leverages exact runtime Jacobians and kinematic redundancy to reach <strong>99.0%</strong> overall vs. NMG's <strong>88.3%</strong>, driven primarily by Pour (96.4% vs. 54.4%).</li>
+                <li><strong>6-DoF PiPER Atomic:</strong> On the non-redundant arm, standard <code>DLS</code> drops to <strong>74.3%</strong> overall (18.5% on AxisAlign), while NMG reaches <strong>90.8%</strong> raw and <strong>90.9%</strong> retimed overall, edging past <code>DLS-JL</code> (89.9%) and cuRobo (86.5%).</li>
               </ul>
             </div>
           </div>
@@ -421,13 +560,45 @@
                       <td>159.74</td>
                       <td>146.32</td>
                     </tr>
+                    <tr>
+                      <td class="left">DLS raw</td>
+                      <td>13.83</td>
+                      <td>26.88</td>
+                      <td>65.6 / N/A</td>
+                      <td class="best">588.50</td>
+                      <td class="best">1,167.56</td>
+                    </tr>
+                    <tr>
+                      <td class="left">DLS retimed</td>
+                      <td>23.19</td>
+                      <td>39.48</td>
+                      <td>65.6 / 65.6</td>
+                      <td>387.63</td>
+                      <td>610.20</td>
+                    </tr>
+                    <tr>
+                      <td class="left">DLS-JL raw</td>
+                      <td class="best">9.26</td>
+                      <td>28.12</td>
+                      <td>65.6 / N/A</td>
+                      <td>517.75</td>
+                      <td>1,027.71</td>
+                    </tr>
+                    <tr>
+                      <td class="left">DLS-JL retimed</td>
+                      <td>18.04</td>
+                      <td>40.40</td>
+                      <td>65.6 / 65.6</td>
+                      <td>318.95</td>
+                      <td>605.14</td>
+                    </tr>
                     <tr class="row-nmg">
                       <td class="left"><strong>NMG raw</strong></td>
-                      <td class="best">12.31</td>
+                      <td>12.31</td>
                       <td class="best">17.54</td>
                       <td>93.8 / N/A</td>
-                      <td class="best">362.42</td>
-                      <td class="best">710.15</td>
+                      <td>362.42</td>
+                      <td>710.15</td>
                     </tr>
                     <tr class="row-nmg">
                       <td class="left"><strong>NMG retimed</strong></td>
@@ -441,8 +612,9 @@
                 </table>
               </div>
               <ul class="takeaway-list">
-                <li><strong>3.3 kHz online control:</strong> One fused closed-loop step takes <strong>0.30 ms</strong> at <em>B</em>=1 and <strong>0.40 ms</strong> at <em>B</em>=64.</li>
-                <li><strong>8.4&times; latency, 4.8&times; throughput:</strong> Raw NMG reaches <strong>710.1 req/s</strong> at native <em>B</em>=64 (retimed: <strong>467.4 req/s</strong> vs. cuRobo's 148.3 req/s).</li>
+                <li><strong>Constant-cost compiled step (0.30 ms at <em>B</em>=1):</strong> Fusing observation construction, the policy, FK, and arrival checks into one <code>torch.compile</code> CUDA Graph evaluates in <strong>0.30 ms</strong> at <em>B</em>=1 and <strong>0.40 ms</strong> at <em>B</em>=64, matching compiled DLS/DLS-JL step cost; executable timing is certified via TOPPRA retiming.</li>
+                <li><strong>Low single-query latency (8.4&times; raw, 4.9&times; retimed):</strong> At <em>B</em>=1, raw NMG cuts median latency from cuRobo's 103.8 ms to <strong>12.3 ms</strong> (<strong>21.4 ms</strong> retimed at 93.8% timed success; cuRobo additionally checks self-collision and smooths paths).</li>
+                <li><strong>Timeout tail explains DLS timings:</strong> Although DLS-JL finishes slightly earlier on easy queries (9.3 ms median), its 34.4% timeout tail makes raw NMG faster in mean latency (<strong>17.5</strong> vs. 28.1 ms) and inflates DLS/DLS-JL batched req/s (which count failed trajectories). At <em>B</em>=64, NMG scales to <strong>4.8&times;</strong> cuRobo's throughput (710.2 vs. 148.3 req/s).</li>
               </ul>
             </div>
 
@@ -464,7 +636,7 @@
               <ul class="takeaway-list">
                 <li><strong>Coarse reaching only:</strong> Undiscounted PPO reaches most single targets at 5&times;–15&times; tolerance, but stalls outside strict 1&times; (0.5% overall).</li>
                 <li><strong>Horizon collapse:</strong> Discounted PPO learns single targets (<strong>59.0%</strong> at <em>K</em><sub>max</sub>=1), then collapses below 9% by <em>K</em><sub>max</sub>=3 and under 0.5% at <em>K</em><sub>max</sub>=8.</li>
-                <li><strong>Kinematic APG:</strong> Exact gradients through FK and closed-loop feedback reach <strong>86.7%</strong> strict sequence success across <em>K</em>=1–8 over the same 500M interactions.</li>
+                <li><strong>Kinematic APG:</strong> Piecewise-analytic pathwise gradients through FK and closed-loop feedback reach <strong>86.7%</strong> strict sequence success across <em>K</em>=1–8 over the same 500M interactions.</li>
               </ul>
             </div>
           </div>
@@ -474,14 +646,22 @@
         <div class="tab-panel" id="tab-behavior">
           <div class="result-grid">
             <div class="card-box">
-              <h3>Closed-Loop Perturbation Recovery</h3>
-              <p class="card-sub">Median error returns below strict tolerance in 1 step after a 0.03-rad disturbance (98–100% recovery).</p>
-              <img class="result-img" src="./assets/images/perturbation-recovery.png" alt="Closed-loop perturbation recovery plot" data-zoom-src="./assets/images/perturbation-recovery.png" data-zoom-title="Closed-Loop Perturbation Recovery" data-zoom-caption="Median and IQR normalized error after a 0.03-rad joint perturbation at step 0." />
+              <h3>Closed-Loop Perturbation Recovery (0.03–1.0 rad)</h3>
+              <p class="card-sub">Recovers from up to 1.0 rad (5&times; per-step bound, 71–94&times; tolerance spike) in 6–7 median steps (93.8–98.4% settled) and 100% of mid-rollout target switches.</p>
+              <img class="result-img" src="./assets/images/perturbation-recovery.png?v=3" alt="Closed-loop perturbation recovery plot" data-zoom-src="./assets/images/perturbation-recovery.png?v=3" data-zoom-title="Closed-Loop Perturbation Recovery (0.03–1.0 rad)" data-zoom-caption="(a) Post-perturbation normalized error decay across disturbance magnitudes (0.03 to 1.0 rad); (b) Median and IQR recovery steps vs. disturbance alongside the nominal joint-displacement scale." />
+              <ul class="takeaway-list">
+                <li><strong>Large-impulse rejection:</strong> Across 0.03–1.00 rad joint disturbances (0.15<em>b</em> to 5<em>b</em>), Franka NMG recovers and holds in <strong>98.4%</strong> of trials at every magnitude, while PiPER NMG holds <strong>100%</strong> up to 0.50 rad and <strong>93.8%</strong> at 1.00 rad (vs. <strong>87.5%</strong> for DLS and DLS-JL).</li>
+                <li><strong>Target switches &amp; step scaling:</strong> Median recovery steps scale from 1 to 6–7 alongside the nominal joint-displacement scale &Delta;/<em>b</em>; both policies also adapt to <strong>100%</strong> of mid-rollout target switches (6.0–7.5 median steps) with zero false completions on infeasible probes.</li>
+              </ul>
             </div>
             <div class="card-box">
               <h3>Counterfactual Future-Context Probe</h3>
               <p class="card-sub">Gated future conditioning learns lookahead (2.24 rad shift) yet lowers overall accuracy by 9.0 pp.</p>
-              <img class="result-img" src="./assets/images/context-tradeoff.png" alt="Future context counterfactual probe" data-zoom-src="./assets/images/context-tradeoff.png" data-zoom-title="Future-Context Counterfactual Probe" data-zoom-caption="Gated future shifts arrival posture by 2.24 rad to cut matched-target steps (3.42 vs. 9.66 swapped; current-only 6.63), yet degrades longer-sequence convergence." />
+              <img class="result-img" src="./assets/images/context-tradeoff.png" alt="Future context counterfactual probe" data-zoom-src="./assets/images/context-tradeoff.png" data-zoom-title="Future-Context Counterfactual Probe" data-zoom-caption="On its eligible pairs, gated future shifts arrival posture by 2.24 rad and needs fewer steps on matched than swapped second targets (3.42 vs. 9.66; current-only: 6.63 vs. 6.63 on its eligible pairs), yet degrades longer-sequence convergence." />
+              <ul class="takeaway-list">
+                <li><strong>Long-horizon convergence cost:</strong> Adding the gated future readout matches current-only at <em>K</em>=1 (99.0%) but widens a convergence gap on longer sequences (<strong>77.9%</strong> vs. <strong>86.9%</strong> overall across <em>K</em>=1–8), with essentially unchanged steps on jointly solved sequences (43.6 vs. 43.9).</li>
+                <li><strong>Within-condition lookahead probe:</strong> On its eligible pairs (29/26/30), gated future shifts arrival posture by <strong>2.24 rad</strong> and finishes matched second targets in far fewer steps than swapped ones (<strong>3.42</strong> vs. <strong>9.66</strong>), whereas current-only (32/32/31 eligible pairs) produces identical arrivals and suffix steps (<strong>6.63</strong> vs. <strong>6.63</strong>).</li>
+              </ul>
             </div>
           </div>
         </div>

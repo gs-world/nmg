@@ -23,8 +23,8 @@ window.NMG_SITE_CONFIG = {
   publicAuthors: [
     { name: "Chen Yang", url: "", affilIds: [1, 2] },
     { name: "Yueci Deng", url: "", affilIds: [1, 2] },
-    { name: "Zhiyuan Hong", url: "" },
-    { name: "Xudong Han", url: "", affilIds: [2, 3] },
+    { name: "Zhiyuan Hong", url: "", affilIds: [3] },
+    { name: "Xudong Han", url: "", affilIds: [2, 4] },
     { name: "Jian Chen", url: "", affilIds: [2] },
     { name: "Jietao Chen", url: "", affilIds: [2] },
     { name: "Kui Jia", url: "", affilIds: [1, 2] },
@@ -33,7 +33,8 @@ window.NMG_SITE_CONFIG = {
   affiliations: [
     { id: 1, name: "The Chinese University of Hong Kong, Shenzhen" },
     { id: 2, name: "Dexforce" },
-    { id: 3, name: "Southern University of Science and Technology" }
+    { id: 3, name: "Shanghai Jiao Tong University" },
+    { id: 4, name: "Southern University of Science and Technology" }
   ],
 
   // Header action buttons (add Paper arXiv / Code URLs once published)
