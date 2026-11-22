@@ -21,7 +21,8 @@ window.NMG_SITE_CONFIG = {
 
   // Used when anonymous === false
   publicAuthors: [
-    { name: "Chen Yang", url: "", affilIds: [1, 2] }
+    { name: "Chen Yang", url: "", affilIds: [1, 2] },
+    { name: "Yueci Deng", url: "", affilIds: [1, 2] }
   ],
   affiliations: [
     { id: 1, name: "The Chinese University of Hong Kong, Shenzhen" },
@@ -53,7 +54,7 @@ window.NMG_SITE_CONFIG = {
 
   bibtexPublic: `@article{yang2026nmg,
   title   = {Neural Motion Generator: Learning Ordered Constraint Satisfaction without Demonstrations},
-  author  = {Chen Yang},
+  author  = {Chen Yang and Yueci Deng},
   journal = {arXiv preprint},
   year    = {2026}
 }`
